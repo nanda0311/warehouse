@@ -10,6 +10,7 @@ export type Product = {
 };
 
 export const products: Product[] = [
+
   {
     id: "PROD-001",
     name: "Laptop Dell XPS 15",
@@ -78,8 +79,16 @@ export const products: Product[] = [
     id: "PROD-009",
     name: "Denim Jeans (32)",
     sku: "CLOTH-JEANS-009",
-    batchNumber: "BATCH-009", // Added batch number
+    batchNumber: "BATCH-009",
     category: "Clothing",
     status: "In Stock",
   },
+  {
+  id: "PROD-0010",
+  name: "PS5",
+  sku: "SONY-PS5-010",
+  batchNumber: "BATCH-009",
+  category:"Electronics",
+  status: "In Stock",
+},
 ];
