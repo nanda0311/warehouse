@@ -3,30 +3,27 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { products, Product } from "@/components/products/data";
+import { Product } from "@/components/products/data";
 
 interface ProductsAddProps {
   onClose: () => void;
+  onAddProduct: (newProduct: Product) => void;
 }
 
-export default function ProductsAdd({ onClose }: ProductsAddProps) {
+export default function ProductsAdd({ onClose, onAddProduct }: ProductsAddProps) {
   const [productName, setProductName] = useState("");
   const [sku, setSku] = useState("");
+  const [batchNumber, setBatchNumber] = useState(""); // State for batch number
   const [category, setCategory] = useState("Electronics");
-  const [quantity, setQuantity] = useState<number>(0);
+  const [status, setStatus] = useState<Product["status"]>("In Stock");
 
-  const calculateStatus = (qty: number): Product["status"] => {
-    if (qty === 0) return "Out of Stock";
-    if (qty < 10) return "Low Stock";
-    return "In Stock";
-  };
-
-  const generateProductId = () => `PROD-${String(products.length + 1).padStart(3, "0")}`;
+  // Generate a unique ID without relying on the `products` array
+  const generateProductId = () => `PROD-${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}`;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!productName || !sku) {
+    if (!productName || !sku || !batchNumber) {
       alert("Please fill all fields.");
       return;
     }
@@ -35,20 +32,20 @@ export default function ProductsAdd({ onClose }: ProductsAddProps) {
       id: generateProductId(),
       name: productName,
       sku,
+      batchNumber, // Include batch number
       category,
-      quantity,
-      location: "Updating...", // Placeholder since location is updated live
-      status: calculateStatus(quantity),
+      status,
     };
 
-    products.push(newProduct);
+    // Call the onAddProduct callback with the new product
+    onAddProduct(newProduct);
     alert("Product added successfully!");
     onClose();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-xl font-bold">Add New Product</h2>
+      <h2 className="text-black font-bold">Add New Product</h2>
       <Input
         type="text"
         placeholder="Product Name"
@@ -62,12 +59,11 @@ export default function ProductsAdd({ onClose }: ProductsAddProps) {
         onChange={(e) => setSku(e.target.value)}
       />
       <Input
-        type="number"
-        placeholder="Quantity"
-        value={quantity}
-        onChange={(e) => setQuantity(Number(e.target.value))}
+        type="text"
+        placeholder="Batch Number"
+        value={batchNumber}
+        onChange={(e) => setBatchNumber(e.target.value)} // Input for batch number
       />
-      
       <select
         className="w-full p-2 border rounded"
         value={category}
@@ -78,7 +74,15 @@ export default function ProductsAdd({ onClose }: ProductsAddProps) {
         <option value="Clothing">Clothing</option>
         <option value="Food">Food</option>
       </select>
-
+      <select
+        className="w-full p-2 border rounded"
+        value={status}
+        onChange={(e) => setStatus(e.target.value as Product["status"])}
+      >
+        <option value="In Stock">In Stock</option>
+        <option value="Low Stock">Low Stock</option>
+        <option value="Out of Stock">Out of Stock</option>
+      </select>
       <Button type="submit">Add Product</Button>
       <Button variant="outline" onClick={onClose}>
         Cancel

@@ -10,7 +10,7 @@ export function DashboardStats() {
           <Package className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">1,248</div>
+          <div className="text-2xl font-bold">50</div>
           <p className="text-xs text-muted-foreground">+12% from last month</p>
         </CardContent>
       </Card>
@@ -21,7 +21,7 @@ export function DashboardStats() {
           <QrCode className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">1,352</div>
+          <div className="text-2xl font-bold">100</div>
           <p className="text-xs text-muted-foreground">+8% from last month</p>
         </CardContent>
       </Card>
@@ -32,7 +32,7 @@ export function DashboardStats() {
           <Drone className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">432</div>
+          <div className="text-2xl font-bold">60</div>
           <p className="text-xs text-muted-foreground">+24% from last month</p>
         </CardContent>
       </Card>

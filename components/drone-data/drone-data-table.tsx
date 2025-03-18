@@ -11,6 +11,14 @@ import { Search, Eye, ArrowUpDown } from "lucide-react"
 // Sample drone scan data
 const droneScanData = [
   {
+    id: "SCAN-1233",
+    productId: "PROD-001",
+    productName: "PS5",
+    location: "Warehouse A, Shelf 3",
+    timestamp: "2023-03-14 14:32:45",
+    status: "match",
+  },
+  {
     id: "SCAN-1234",
     productId: "PROD-001",
     productName: "Laptop Dell XPS 15",

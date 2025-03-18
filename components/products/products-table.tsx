@@ -14,16 +14,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { QrCode, MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
-import { products, Product } from "@/components/products/data";
+import { useRouter } from "next/navigation";
+import { Product } from "@/components/products/data";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ProductForm } from "@/components/products/product-form"; 
+import { ProductForm } from "@/components/products/product-form";
 
 interface ProductsTableProps {
   products: Product[];
@@ -61,7 +60,13 @@ export function ProductsTable({ products }: ProductsTableProps) {
 
   const handleGenerateQR = (product: Product) => {
     // Navigate to the QR code generation page with product details
-    router.push(`/dashboard/qr-codes?productId=${product.id}`);
+    router.push(
+      `/dashboard/qr-codes?productId=${product.id}&productName=${encodeURIComponent(
+        product.name
+      )}&sku=${encodeURIComponent(product.sku)}&batchNumber=${encodeURIComponent(
+        product.batchNumber
+      )}&category=${encodeURIComponent(product.category)}`
+    );
   };
 
   const handleDeleteProduct = (id: string) => {
@@ -78,13 +83,6 @@ export function ProductsTable({ products }: ProductsTableProps) {
     }
   };
 
-
-  const pathname = usePathname();
-
-  const isActive = (path: string) => {
-    return pathname === path || pathname?.startsWith(`${path}/`);
-  };
-
   return (
     <div className="rounded-md border">
       <Table>
@@ -97,8 +95,10 @@ export function ProductsTable({ products }: ProductsTableProps) {
                 aria-label="Select all products"
               />
             </TableHead>
+            <TableHead>ID</TableHead>
             <TableHead>Product</TableHead>
             <TableHead>SKU</TableHead>
+            <TableHead>Batch Number</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
@@ -114,8 +114,10 @@ export function ProductsTable({ products }: ProductsTableProps) {
                   aria-label={`Select ${product.name}`}
                 />
               </TableCell>
+              <TableCell>{product.id}</TableCell>
               <TableCell className="font-medium">{product.name}</TableCell>
               <TableCell>{product.sku}</TableCell>
+              <TableCell>{product.batchNumber}</TableCell>
               <TableCell>{product.category}</TableCell>
               <TableCell>
                 <Badge
@@ -175,9 +177,11 @@ export function ProductsTable({ products }: ProductsTableProps) {
             <DialogTitle>Product Details</DialogTitle>
           </DialogHeader>
           {viewProduct && (
-            <div>
+            <div className="space-y-2">
+              <p><strong>ID:</strong> {viewProduct.id}</p>
               <p><strong>Name:</strong> {viewProduct.name}</p>
               <p><strong>SKU:</strong> {viewProduct.sku}</p>
+              <p><strong>Batch Number:</strong> {viewProduct.batchNumber}</p>
               <p><strong>Category:</strong> {viewProduct.category}</p>
               <p><strong>Status:</strong> {viewProduct.status}</p>
             </div>

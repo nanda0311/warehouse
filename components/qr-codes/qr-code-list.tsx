@@ -50,6 +50,14 @@ const qrCodes = [
     createdAt: "2023-03-13",
     lastScanned: "2023-03-14",
   },
+  {
+    id: "QR-006",
+    productId: "PROD-006",
+    productName: 'PS%"',
+    type: "QR Code",
+    createdAt: "2023-03-13",
+    lastScanned: "2023-03-14",
+  }
 ]
 
 export function QRCodeList() {

@@ -4,23 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Search, Filter } from "lucide-react";
-import { useState } from "react";
-import { Modal } from "@/components/products/modal"; // Import Modal
-import ProductsAdd from "@/components/products/products-add"; // Import Add Product Component
 
 interface ProductsHeaderProps {
   onCategoryChange: (category: string) => void;
   onSearchChange: (search: string) => void;
+  onAddProduct: () => void; // Add this prop
 }
 
-export function ProductsHeader({ onCategoryChange, onSearchChange }: ProductsHeaderProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+export function ProductsHeader({ onCategoryChange, onSearchChange, onAddProduct }: ProductsHeaderProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Products</h2>
-        <Button className="mt-2 sm:mt-0" onClick={() => setIsModalOpen(true)}>
+        <Button className="mt-2 sm:mt-0" onClick={onAddProduct}>
           <Plus className="mr-2 h-4 w-4" />
           Add Product
         </Button>
@@ -58,11 +54,6 @@ export function ProductsHeader({ onCategoryChange, onSearchChange }: ProductsHea
           </Button>
         </div>
       </div>
-
-      {/* Modal for Adding Product */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ProductsAdd onClose={() => setIsModalOpen(false)} />
-      </Modal>
     </div>
   );
 }
