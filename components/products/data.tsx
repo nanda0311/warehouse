@@ -89,6 +89,14 @@ export const products: Product[] = [
         location: "Warehouse E, Shelf 6",
         status: "In Stock",
       },
-      
+      {
+        id: "PROD-010",
+        name: "PS5",
+        sku: "SONY-PS5-010",
+        category: "Electronics",
+        quantity: 7,
+        location: "Warehouse A, Shelf 4",
+        status: "In Stock",
+      },
   ];
   
