@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { useState } from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,121 +12,78 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { QrCode, MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react"
+} from "@/components/ui/dropdown-menu";
+import { QrCode, MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { products, Product } from "@/components/products/data";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ProductForm } from "@/components/products/product-form"; 
 
-// Sample product data
-const products = [
-  {
-    id: "PROD-001",
-    name: "Laptop Dell XPS 15",
-    sku: "DELL-XPS15-001",
-    category: "Electronics",
-    quantity: 24,
-    location: "Warehouse A, Shelf 3",
-    status: "In Stock",
-  },
-  {
-    id: "PROD-002",
-    name: "iPhone 15 Pro",
-    sku: "APPLE-IP15P-002",
-    category: "Electronics",
-    quantity: 42,
-    location: "Warehouse B, Shelf 7",
-    status: "In Stock",
-  },
-  {
-    id: "PROD-003",
-    name: 'Samsung TV 55"',
-    sku: "SAMSUNG-TV55-003",
-    category: "Electronics",
-    quantity: 8,
-    location: "Warehouse A, Shelf 12",
-    status: "Low Stock",
-  },
-  {
-    id: "PROD-004",
-    name: "Sony Headphones WH-1000XM5",
-    sku: "SONY-WH1000XM5-004",
-    category: "Electronics",
-    quantity: 16,
-    location: "Warehouse C, Shelf 2",
-    status: "In Stock",
-  },
-  {
-    id: "PROD-005",
-    name: 'iPad Pro 12.9"',
-    sku: "APPLE-IPADPRO-005",
-    category: "Electronics",
-    quantity: 12,
-    location: "Warehouse B, Shelf 5",
-    status: "In Stock",
-  },
-  {
-    id: "PROD-006",
-    name: "Office Desk Chair",
-    sku: "FURN-CHAIR-006",
-    category: "Furniture",
-    quantity: 5,
-    location: "Warehouse D, Shelf 1",
-    status: "Low Stock",
-  },
-  {
-    id: "PROD-007",
-    name: "Wooden Dining Table",
-    sku: "FURN-TABLE-007",
-    category: "Furniture",
-    quantity: 3,
-    location: "Warehouse D, Shelf 3",
-    status: "Low Stock",
-  },
-  {
-    id: "PROD-008",
-    name: "Cotton T-Shirt (L)",
-    sku: "CLOTH-TSHIRT-008",
-    category: "Clothing",
-    quantity: 78,
-    location: "Warehouse E, Shelf 4",
-    status: "In Stock",
-  },
-  {
-    id: "PROD-009",
-    name: "Denim Jeans (32)",
-    sku: "CLOTH-JEANS-009",
-    category: "Clothing",
-    quantity: 45,
-    location: "Warehouse E, Shelf 6",
-    status: "In Stock",
-  },
-  {
-    id: "PROD-010",
-    name: "Organic Coffee Beans",
-    sku: "FOOD-COFFEE-010",
-    category: "Food",
-    quantity: 0,
-    location: "Warehouse F, Shelf 2",
-    status: "Out of Stock",
-  },
-]
+interface ProductsTableProps {
+  products: Product[];
+}
 
-export function ProductsTable() {
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
+export function ProductsTable({ products }: ProductsTableProps) {
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [viewProduct, setViewProduct] = useState<Product | null>(null);
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<string | null>(null);
+  const router = useRouter();
 
   const toggleSelectAll = () => {
-    if (selectedProducts.length === products.length) {
-      setSelectedProducts([])
+    if (selectedProducts.length === (products?.length || 0)) {
+      setSelectedProducts([]);
     } else {
-      setSelectedProducts(products.map((product) => product.id))
+      setSelectedProducts(products?.map((product) => product.id) || []);
     }
-  }
+  };
 
   const toggleSelectProduct = (id: string) => {
-    if (selectedProducts.includes(id)) {
-      setSelectedProducts(selectedProducts.filter((productId) => productId !== id))
-    } else {
-      setSelectedProducts([...selectedProducts, id])
+    setSelectedProducts((prev) =>
+      prev.includes(id) ? prev.filter((productId) => productId !== id) : [...prev, id]
+    );
+  };
+
+  const handleViewDetails = (product: Product) => {
+    setViewProduct(product);
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditProduct(product);
+  };
+
+  const handleGenerateQR = (product: Product) => {
+    // Navigate to the QR code generation page with product details
+    router.push(`/dashboard/qr-codes?productId=${product.id}`);
+  };
+
+  const handleDeleteProduct = (id: string) => {
+    setProductToDelete(id);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (productToDelete) {
+      // Perform delete operation (e.g., update state or call an API)
+      console.log("Deleting product:", productToDelete);
+      setIsDeleteDialogOpen(false);
+      setProductToDelete(null);
     }
-  }
+  };
+
+
+  const pathname = usePathname();
+
+  const isActive = (path: string) => {
+    return pathname === path || pathname?.startsWith(`${path}/`);
+  };
 
   return (
     <div className="rounded-md border">
@@ -135,7 +92,7 @@ export function ProductsTable() {
           <TableRow>
             <TableHead className="w-[50px]">
               <Checkbox
-                checked={selectedProducts.length === products.length && products.length > 0}
+                checked={selectedProducts.length === (products?.length || 0) && products?.length > 0}
                 onCheckedChange={toggleSelectAll}
                 aria-label="Select all products"
               />
@@ -143,14 +100,12 @@ export function ProductsTable() {
             <TableHead>Product</TableHead>
             <TableHead>SKU</TableHead>
             <TableHead>Category</TableHead>
-            <TableHead className="text-center">Quantity</TableHead>
-            <TableHead>Location</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
+          {(products || []).map((product) => (
             <TableRow key={product.id}>
               <TableCell>
                 <Checkbox
@@ -162,8 +117,6 @@ export function ProductsTable() {
               <TableCell className="font-medium">{product.name}</TableCell>
               <TableCell>{product.sku}</TableCell>
               <TableCell>{product.category}</TableCell>
-              <TableCell className="text-center">{product.quantity}</TableCell>
-              <TableCell>{product.location}</TableCell>
               <TableCell>
                 <Badge
                   variant={
@@ -187,20 +140,23 @@ export function ProductsTable() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleViewDetails(product)}>
                       <Eye className="mr-2 h-4 w-4" />
                       View details
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEditProduct(product)}>
                       <Pencil className="mr-2 h-4 w-4" />
                       Edit product
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleGenerateQR(product)}>
                       <QrCode className="mr-2 h-4 w-4" />
                       Generate QR code
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive">
+                    <DropdownMenuItem
+                      className="text-destructive"
+                      onClick={() => handleDeleteProduct(product.id)}
+                    >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Delete product
                     </DropdownMenuItem>
@@ -211,7 +167,51 @@ export function ProductsTable() {
           ))}
         </TableBody>
       </Table>
-    </div>
-  )
-}
 
+      {/* View Details Dialog */}
+      <Dialog open={!!viewProduct} onOpenChange={() => setViewProduct(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Product Details</DialogTitle>
+          </DialogHeader>
+          {viewProduct && (
+            <div>
+              <p><strong>Name:</strong> {viewProduct.name}</p>
+              <p><strong>SKU:</strong> {viewProduct.sku}</p>
+              <p><strong>Category:</strong> {viewProduct.category}</p>
+              <p><strong>Status:</strong> {viewProduct.status}</p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Product Dialog */}
+      <Dialog open={!!editProduct} onOpenChange={() => setEditProduct(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Product</DialogTitle>
+          </DialogHeader>
+          {editProduct && <ProductForm product={editProduct} onSave={() => setEditProduct(null)} />}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+          </DialogHeader>
+          <p>This action cannot be undone. This will permanently delete the product.</p>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

@@ -28,8 +28,9 @@ export function DashboardSidebar() {
   const pathname = usePathname()
 
   const isActive = (path: string) => {
-    return pathname === path || pathname.startsWith(`${path}/`)
-  }
+    return pathname === path || pathname?.startsWith(`${path}/`);
+  };
+  
 
   return (
     <Sidebar>
